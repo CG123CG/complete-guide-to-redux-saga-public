@@ -1,0 +1,39 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Gitesh",
+      "email": "Gitesh@Gitesh.com",
+      "phone": "8789798798",
+      "country": "USA"
+    },
+    {
+      "name": "q",
+      "email": "q",
+      "phone": "q",
+      "country": "q",
+      "id": 2
+    },
+    {
+      "name": "3q",
+      "email": "3q",
+      "phone": "q3",
+      "country": "3q",
+      "id": 3
+    },
+    {
+      "name": "4q",
+      "email": "4q",
+      "phone": "q4",
+      "country": "4q",
+      "id": 4
+    },
+    {
+      "name": "555555555",
+      "email": "5q",
+      "phone": "q5",
+      "country": "5q",
+      "id": 5
+    }
+  ]
+}
