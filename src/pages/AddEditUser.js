@@ -81,7 +81,7 @@ function AddEditUser() {
     //Check if all the form fields have value
     if (name && email && phone && country) {
       //If Add mode
-      if (!setEditMode) {
+      if (!editMode) {
         dispatch(createUserStart(formValue))
         //Toast
         toast.success("User Added Successfully")
@@ -93,6 +93,10 @@ function AddEditUser() {
         //formValue contains user information
         dispatch(updateUserStart({ id, formValue }))
         setEditMode(false)
+        //Toast
+        toast.success("User Edited Successfully")
+        //Redirect user to Home Page
+        setTimeout(() => navigate("/"), 500)
       }
     }
   }
