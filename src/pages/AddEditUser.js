@@ -19,12 +19,13 @@ const initialState = {
   name: "",
   email: "",
   phone: "",
-  country: ""
+  country: "",
+  status: ""
 }
 
 function AddEditUser() {
   const [formValue, setFormValue] = useState(initialState)
-  const { name, email, phone, country } = formValue
+  const { name, email, phone, country, status } = formValue
 
   //Edit mode selection, false === Add, true === Edit
   const [editMode, setEditMode] = useState(false)
@@ -43,7 +44,19 @@ function AddEditUser() {
   //http://localhost:3002/editUser/1
   const { id } = useParams()
 
+  //For filter
+  const options = [
+    {
+      label: "Active",
+      value: "Active"
+    },
+    {
+      label: "In-Active",
+      value: "In-Active"
+    }
+  ]
 
+  //If id is there === user is in EDIT mode
   useEffect(() => {
     if (id) {
       setEditMode(true)
@@ -68,6 +81,14 @@ function AddEditUser() {
       //console.log(typeof (singleUser))
 
       setFormValue(singleUser)
+    }
+    //else case when user switches to Add mode from Edit mode
+    //issue in point-106
+    else {
+      //reset editMode
+      setEditMode(false)
+      //reset form values to initialState
+      setFormValue(initialState)
     }
   }, [id])
 
@@ -107,6 +128,15 @@ function AddEditUser() {
     setFormValue({
       ...formValue,
       [name]: value
+    })
+  }
+
+  //For Dropdown
+  const onDropdownChange = (event) => {
+    //console.log(event.target.value)
+    setFormValue({
+      ...formValue,
+      status: event.target.value
     })
   }
 
@@ -172,6 +202,37 @@ function AddEditUser() {
             label="Country"
           />
         </MDBValidationItem>
+        <br />
+
+        {/* console.log("status is ", status) */}
+        {/* Filter Option */}
+        <select
+          //defaultValue={status}
+          value={status}
+          style={{
+            width: "100%",
+            borderRadius: "4px",
+            height: "35px",
+            borderColor: "lightgray"
+          }}
+          onChange={onDropdownChange}
+        >
+          <option value="" hidden>Please select a status</option>
+          {options.map((option) => (
+            <option
+              key={option.value}
+            //value={option.value}
+            //selected attribute added to prepopulate in EDIT mode
+            //selected={status === option.value ? true : false}
+            >
+              {option.label}
+            </option>
+          )
+          )}
+        </select>
+
+        <br />
+        <br />
         <br />
 
         <div className="col-12 text-center">

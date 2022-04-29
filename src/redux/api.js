@@ -10,14 +10,12 @@ export const loadUsersAPI = async () => {
     //return await axios.get(dbURL)
 
     return await axios.get(`${devEnv ? REACT_APP_DEV_URL : REACT_APP_PROD_URL}`)
-
 }
 
 export const createUserAPI = async (user) => {
     // return await axios.post(dbURL, user)
 
     return await axios.post(`${devEnv ? REACT_APP_DEV_URL : REACT_APP_PROD_URL}`, user)
-
 }
 
 //DID OWN
@@ -26,7 +24,6 @@ export const deleteUserAPI = async (userId) => {
     //return await axios.delete(dbURL + `/${userId}`)
 
     return await axios.delete(`${devEnv ? REACT_APP_DEV_URL : REACT_APP_PROD_URL}` + `/${userId}`)
-
 }
 
 export const updateUserAPI = async (userId, userInfo) => {
@@ -35,7 +32,20 @@ export const updateUserAPI = async (userId, userInfo) => {
 
 
     return await axios.put(`${devEnv ? REACT_APP_DEV_URL : REACT_APP_PROD_URL}` + `/${userId}`, userInfo)
+}
 
+export const searchUserAPI = async (query) => {
+    // http://localhost:5000/users?q=gitesh
+    return await axios.get(dbURL + `?q=${query}`)
 
+    //return await axios.delete(`${devEnv ? REACT_APP_DEV_URL : REACT_APP_PROD_URL}` + `?${query}`)
+}
+
+export const filterUserAPI = async (status) => {
+    // http://localhost:5000/users?status=Active
+    // http://localhost:5000/users?status=In-Active
+    return await axios.get(dbURL + `?status=${status}`)
+
+    //return await axios.delete(`${devEnv ? REACT_APP_DEV_URL : REACT_APP_PROD_URL}` + `?status${status}`)
 }
 

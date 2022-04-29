@@ -18,19 +18,25 @@ import {
     deleteUserSuccess,
     deleteUserError,
     updateUserSuccess,
-    updateUserError
+    updateUserError,
+    searchUserSuccess,
+    searchUserError,
+    filterUserSuccess,
+    filterUserError
 } from './actions'
 import * as types from './actionTypes'
 import {
     loadUsersAPI,
     createUserAPI,
     deleteUserAPI,
-    updateUserAPI
+    updateUserAPI,
+    searchUserAPI,
+    filterUserAPI
 } from './api'
 
 
 //###################################################################################
-//             WORKER SAGAS - LOADING, CREATING, DELETING, UPDATING
+//    WORKER SAGAS - LOADING, CREATING, DELETING, UPDATING, SEARCHING, FILTERING
 //###################################################################################
 
 //Worker Saga - LOADING
@@ -101,8 +107,8 @@ function* onDeleteUserStartAsync(userId) {
 //Using 2nd Level of Object destructuring - get id, formValue
 function* onUpdateUserStartAsync({ payload: { id, formValue } }) {
     try {
-        console.log("payload id", id)
-        console.log("payload formValue", formValue)
+        //console.log("payload id", id)
+        //console.log("payload formValue", formValue)
 
         //Call - Blocking
         //call: run a method, Promise or other Saga
@@ -111,7 +117,10 @@ function* onUpdateUserStartAsync({ payload: { id, formValue } }) {
         const response = yield call(updateUserAPI, id, formValue)
         if (response.status === 200) {
             console.log(response.data)
-            yield put(updateUserSuccess())
+            //yield put(updateUserSuccess())
+            //OWN to update the STORE
+            //Can send only 1 object, so send response.data
+            yield put(updateUserSuccess(response.data))
         }
     }
     catch (error) {
@@ -121,8 +130,49 @@ function* onUpdateUserStartAsync({ payload: { id, formValue } }) {
 }
 
 
+//Worker Saga - SEARCHING
+//Using query alias for action.payload
+function* onSearchUserStartAsync({ payload: query }) {
+    try {
+        //Call - Blocking
+        //call: run a method, Promise or other Saga
+        //call: Wait for the promise to finish
+        //call: The argument should be a function that returns a promise
+        const response = yield call(searchUserAPI, query)
+        if (response.status === 200) {
+            //console.log(response.data)
+            yield put(searchUserSuccess(response.data))
+        }
+    }
+    catch (error) {
+        console.log(error.response.status, error.response.statusText)
+        yield put(searchUserError(error.response.status))
+    }
+}
+
+//Worker Saga - FILTERING
+//Using status alias for action.payload
+function* onFilterUserStartAsync({ payload: status }) {
+    try {
+        //Call - Blocking
+        //call: run a method, Promise or other Saga
+        //call: Wait for the promise to finish
+        //call: The argument should be a function that returns a promise
+        const response = yield call(filterUserAPI, status)
+        if (response.status === 200) {
+            console.log(response.data)
+            yield put(filterUserSuccess(response.data))
+        }
+    }
+    catch (error) {
+        console.log(error.response.status, error.response.statusText)
+        yield put(filterUserError(error.response.status))
+    }
+}
+
+
 //###################################################################################
-//             WATCHER SAGAS - LOADING, CREATING, DELETING, UPDATING
+//   WATCHER SAGAS - LOADING, CREATING, DELETING, UPDATING, SEARCHING, FILTERING
 //###################################################################################
 
 //Watcher Saga for Loading Users
@@ -168,6 +218,18 @@ function* onUpdateUser() {
     yield takeLatest(types.UPDATE_USER_START, onUpdateUserStartAsync)
 }
 
+//Watcher Saga for Searching a User
+function* onSearchUser() {
+    //takeEvery - Non-Blocking
+    yield takeLatest(types.SEARCH_USER_START, onSearchUserStartAsync)
+}
+
+//Watcher Saga for Filtering a User
+function* onFilterUser() {
+    //takeEvery - Non-Blocking
+    yield takeLatest(types.FILTER_USER_START, onFilterUserStartAsync)
+}
+
 
 //###################################################################################
 //                          WATCHER SAGAS ARRAY
@@ -180,7 +242,9 @@ const userSagas = [
     fork(onLoadUsers),
     fork(onCreateUser),
     fork(onDeleteUser),
-    fork(onUpdateUser)
+    fork(onUpdateUser),
+    fork(onSearchUser),
+    fork(onFilterUser)
 ]
 
 //###################################################################################
