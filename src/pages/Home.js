@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { loadUsersStart, deleteUserStart, filterUserStart } from '../redux/actions'
+import { loadUsersStart, deleteUserStart, filterUserStart, sortUserStart } from '../redux/actions'
 import {
   MDBTable,
   MDBTableBody,
@@ -26,6 +26,12 @@ function Home() {
   //In usersReducer, STATE is users: []
   const { users, error } = useSelector(store => store.data)
 
+  //State to hold column name for Sorting
+  const [sortValue, setSortValue] = useState("")
+
+  //Array for all possible sorting values
+  const sortOptions = ["name", "email", "phone", "country", "status"]
+
   //useEffect to show Toast for Error
   useEffect(() => {
     //if error, then show the toast msg with error content
@@ -43,6 +49,13 @@ function Home() {
   //Added for Filtering
   const onFilterChange = (status) => {
     dispatch(filterUserStart(status))
+  }
+
+  //Added for Sorting
+  const onSortChange = (event) => {
+    //console.log(event.target.value)
+    setSortValue(event.target.value)
+    dispatch(sortUserStart(event.target.value))
   }
 
   useEffect(() => {
@@ -145,6 +158,27 @@ function Home() {
 
         <MDBCol size="5">
           <h5 className="text-center">Sort By </h5>
+
+          {/* Sort Option */}
+          <select
+            value={sortValue}
+            style={{
+              marginLeft: "130px",
+              width: "50%",
+              borderRadius: "4px",
+              height: "35px",
+              borderColor: "lightgray"
+            }}
+            onChange={onSortChange}
+          >
+            <option value="" hidden>Please select a Sort option</option>
+            {sortOptions.map((option, index) => (
+              <option key={index}>
+                {option}
+              </option>
+            )
+            )}
+          </select>
         </MDBCol>
 
         <MDBCol size="2">

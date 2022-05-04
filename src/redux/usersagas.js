@@ -22,7 +22,9 @@ import {
     searchUserSuccess,
     searchUserError,
     filterUserSuccess,
-    filterUserError
+    filterUserError,
+    sortUserSuccess,
+    sortUserError
 } from './actions'
 import * as types from './actionTypes'
 import {
@@ -31,13 +33,14 @@ import {
     deleteUserAPI,
     updateUserAPI,
     searchUserAPI,
-    filterUserAPI
+    filterUserAPI,
+    sortUserAPI
 } from './api'
 
 
-//###################################################################################
-//    WORKER SAGAS - LOADING, CREATING, DELETING, UPDATING, SEARCHING, FILTERING
-//###################################################################################
+//######################################################################################
+//WORKER SAGAS - LOADING, CREATING, DELETING, UPDATING, SEARCHING, FILTERING, SORTING
+//######################################################################################
 
 //Worker Saga - LOADING
 function* onLoadUsersStartAsync() {
@@ -160,7 +163,7 @@ function* onFilterUserStartAsync({ payload: status }) {
         //call: The argument should be a function that returns a promise
         const response = yield call(filterUserAPI, status)
         if (response.status === 200) {
-            console.log(response.data)
+            //console.log(response.data)
             yield put(filterUserSuccess(response.data))
         }
     }
@@ -170,10 +173,31 @@ function* onFilterUserStartAsync({ payload: status }) {
     }
 }
 
+//Worker Saga - SORTING
+//Using column alias for action.payload
+function* onSortUserStartAsync({ payload: column }) {
+    try {
+        //Call - Blocking
+        //call: run a method, Promise or other Saga
+        //call: Wait for the promise to finish
+        //call: The argument should be a function that returns a promise
+        const response = yield call(sortUserAPI, column)
+        if (response.status === 200) {
+            console.log(response.data)
+            yield put(sortUserSuccess(response.data))
+        }
+    }
+    catch (error) {
+        console.log(error.response.status, error.response.statusText)
+        yield put(sortUserError(error.response.status))
+    }
+}
 
-//###################################################################################
-//   WATCHER SAGAS - LOADING, CREATING, DELETING, UPDATING, SEARCHING, FILTERING
-//###################################################################################
+
+
+//######################################################################################
+//WATCHER SAGAS - LOADING, CREATING, DELETING, UPDATING, SEARCHING, FILTERING, SORTING
+//######################################################################################
 
 //Watcher Saga for Loading Users
 function* onLoadUsers() {
@@ -230,6 +254,13 @@ function* onFilterUser() {
     yield takeLatest(types.FILTER_USER_START, onFilterUserStartAsync)
 }
 
+//Watcher Saga for Sorting a User
+function* onSortUser() {
+    //takeEvery - Non-Blocking
+    yield takeLatest(types.SORT_USER_START, onSortUserStartAsync)
+}
+
+
 
 //###################################################################################
 //                          WATCHER SAGAS ARRAY
@@ -244,7 +275,8 @@ const userSagas = [
     fork(onDeleteUser),
     fork(onUpdateUser),
     fork(onSearchUser),
-    fork(onFilterUser)
+    fork(onFilterUser),
+    fork(onSortUser)
 ]
 
 //###################################################################################

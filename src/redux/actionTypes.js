@@ -28,4 +28,8 @@ export const FILTER_USER_START = "FILTER_USER_START"
 export const FILTER_USER_SUCCESS = "FILTER_USER_SUCCESS"
 export const FILTER_USER_ERROR = "FILTER_USER_ERROR"
 
+// Action Constants for Sorting User
+export const SORT_USER_START = "SORT_USER_START"
+export const SORT_USER_SUCCESS = "SORT_USER_SUCCESS"
+export const SORT_USER_ERROR = "SORT_USER_ERROR"
 

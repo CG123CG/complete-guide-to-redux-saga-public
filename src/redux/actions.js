@@ -173,3 +173,32 @@ export const filterUserError = (error) => (
     }
 )
 
+//###################################################################################
+//             SORT USERS
+//###################################################################################
+
+//Receive columnName from dispatch call in onSortChange() in Home.js
+//Component handling the Sort will provide the column name to sort upon
+export const sortUserStart = (columnName) => (
+    {
+        type: types.SORT_USER_START,
+        payload: columnName
+    }
+)
+
+//Upon success, Sort execution will return back sortedUsers
+export const sortUserSuccess = (sortedUsers) => (
+    {
+        type: types.SORT_USER_SUCCESS,
+        payload: sortedUsers
+    }
+)
+
+//Will receive error from Saga post API call
+export const sortUserError = (error) => (
+    {
+        type: types.SORT_USER_ERROR,
+        payload: error
+    }
+)
+

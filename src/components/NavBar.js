@@ -13,7 +13,7 @@ import {
 } from 'mdb-react-ui-kit'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { searchUserStart } from '../redux/actions'
+import { searchUserStart, loadUsersStart } from '../redux/actions'
 
 
 function NavBar() {
@@ -40,6 +40,12 @@ function NavBar() {
         dispatch(searchUserStart(searchTerm))
         setSearchTerm("")
     }
+
+    //Handler for RESET button
+    const handleReset = () => {
+        dispatch(loadUsersStart())
+    }
+
 
     return (
         <>
@@ -94,7 +100,8 @@ function NavBar() {
                         //Conditional check added to not show Search if not Home page */}
                         {pathname !== "/" ? "" :
                             <form
-                                className="d-flex input-group w-auto"
+                                style={{ width: "500px" }}
+                                className="d-flex input-group"
                                 onSubmit={handleSubmit}
                             >
                                 <input
@@ -105,7 +112,21 @@ function NavBar() {
                                     onChange={(event) => setSearchTerm(event.target.value)}
                                 >
                                 </input>
-                                <MDBBtn color="dark" type="submit">Search</MDBBtn>
+                                <MDBBtn
+                                    color="dark"
+                                    type="submit"
+                                >
+                                    Search
+                                </MDBBtn>
+
+                                <MDBBtn
+                                    className="mx-2"
+                                    color="warning"
+                                    type="button"
+                                    onClick={handleReset}
+                                >
+                                    RESET
+                                </MDBBtn>
                             </form>
                         }
 

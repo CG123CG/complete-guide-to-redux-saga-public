@@ -38,7 +38,7 @@ export const searchUserAPI = async (query) => {
     // http://localhost:5000/users?q=gitesh
     return await axios.get(dbURL + `?q=${query}`)
 
-    //return await axios.delete(`${devEnv ? REACT_APP_DEV_URL : REACT_APP_PROD_URL}` + `?${query}`)
+    //return await axios.get(`${devEnv ? REACT_APP_DEV_URL : REACT_APP_PROD_URL}` + `?${query}`)
 }
 
 export const filterUserAPI = async (status) => {
@@ -46,6 +46,13 @@ export const filterUserAPI = async (status) => {
     // http://localhost:5000/users?status=In-Active
     return await axios.get(dbURL + `?status=${status}`)
 
-    //return await axios.delete(`${devEnv ? REACT_APP_DEV_URL : REACT_APP_PROD_URL}` + `?status${status}`)
+    //return await axios.get(`${devEnv ? REACT_APP_DEV_URL : REACT_APP_PROD_URL}` + `?status${status}`)
+}
+
+export const sortUserAPI = async (columnName) => {
+    // http://localhost:5000/users?_sort=name&_order=asc
+    return await axios.get(dbURL + `?_sort=${columnName}&_order=asc`)
+
+    //return await axios.get(`${devEnv ? REACT_APP_DEV_URL : REACT_APP_PROD_URL}` + `?_sort=${columnName}&_order=asc`)
 }
 
