@@ -3,7 +3,10 @@ import * as types from './actionTypes'
 const initialState = {
     users: [],
     loading: false,
-    error: null
+    error: null,
+    pageLimit: 4,
+    currentPage: 0,
+    paginationMode: true
 }
 
 function usersReducer(state = initialState, action) {
@@ -23,19 +26,29 @@ function usersReducer(state = initialState, action) {
             }
             break
         case types.LOAD_USERS_SUCCESS:
+            newState = {
+                ...state,
+                loading: false,
+                users: action.payload.users,
+                currentPage: state.currentPage + action.payload.currentPage,
+                paginationMode: true
+            }
+            break
         case types.SEARCH_USER_SUCCESS:
         case types.FILTER_USER_SUCCESS:
         case types.SORT_USER_SUCCESS:
             newState = {
                 ...state,
                 loading: false,
-                users: action.payload
+                users: action.payload,
+                paginationMode: false
             }
             break
         case types.CREATE_USER_SUCCESS:
             newState = {
                 ...state,
                 loading: false,
+                currentPage: 0
             }
             break
         case types.UPDATE_USER_SUCCESS:
@@ -48,14 +61,16 @@ function usersReducer(state = initialState, action) {
                 ...state,
                 loading: false,
                 //Using Spread Operator - Merge existing user with formValue
-                users: state.users.map(user => (user.id === id ? { ...user, ...formValue } : user))
+                users: state.users.map(user => (user.id === id ? { ...user, ...formValue } : user)),
+                currentPage: 0
             }
             break
         case types.DELETE_USER_SUCCESS:
             newState = {
                 ...state,
                 loading: false,
-                users: state.users.filter((user) => user.id !== action.payload)
+                users: state.users.filter((user) => user.id !== action.payload),
+                currentPage: 0
             }
             break
         case types.LOAD_USERS_ERROR:

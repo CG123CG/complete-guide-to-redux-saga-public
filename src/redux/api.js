@@ -6,10 +6,16 @@ const { REACT_APP_DEV_URL, REACT_APP_PROD_URL } = process.env
 const dbURL = "http://localhost:5000/users"
 
 //use this TEMPLATE for all AXIOS calls
-export const loadUsersAPI = async () => {
+//Receive start, end from Component for pagination
+export const loadUsersAPI = async (start, end) => {
+    //http://localhost:5000/users?_start=0&_limit=4
+    //http://localhost:5000/users?_start=0&_end=4
+
     //return await axios.get(dbURL)
 
-    return await axios.get(`${devEnv ? REACT_APP_DEV_URL : REACT_APP_PROD_URL}`)
+    return await axios.get(dbURL + `?_start=${start}&_end=${end}`)
+
+    //return await axios.get(`${devEnv ? REACT_APP_DEV_URL : REACT_APP_PROD_URL}`)
 }
 
 export const createUserAPI = async (user) => {

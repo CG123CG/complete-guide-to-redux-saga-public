@@ -12,11 +12,13 @@ import {
     MDBBtn
 } from 'mdb-react-ui-kit'
 import { NavLink, useLocation } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { searchUserStart, loadUsersStart } from '../redux/actions'
 
 
 function NavBar() {
+    //Extract currentPage from the STORE to use for RESET
+    const { currentPage } = useSelector(store => store.data)
 
     //Added for Fixed Search box issue 
     const location = useLocation()
@@ -43,7 +45,13 @@ function NavBar() {
 
     //Handler for RESET button
     const handleReset = () => {
-        dispatch(loadUsersStart())
+        //console.log("currentPage is", currentPage)
+        //Before Pagination
+        //dispatch(loadUsersStart())
+        //After Pagination
+        //dispatch(loadUsersStart({ start: 0, end: 4, currentPage: 0 }))
+        //OWN Fix
+        dispatch(loadUsersStart({ start: 0, end: 4, currentPage: -currentPage }))
     }
 
 

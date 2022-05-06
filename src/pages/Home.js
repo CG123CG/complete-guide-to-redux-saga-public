@@ -11,7 +11,10 @@ import {
   MDBContainer,
   MDBRow,
   MDBCol,
-  MDBBtnGroup
+  MDBBtnGroup,
+  MDBPagination,
+  MDBPaginationItem,
+  MDBPaginationLink
 } from 'mdb-react-ui-kit'
 import { NavLink } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -24,7 +27,7 @@ function Home() {
   //Get data/users from the Store
   //In rootReducer, usersReducer has data key, data: usersReducer
   //In usersReducer, STATE is users: []
-  const { users, error } = useSelector(store => store.data)
+  const { users, error, pageLimit, currentPage, paginationMode } = useSelector(store => store.data)
 
   //State to hold column name for Sorting
   const [sortValue, setSortValue] = useState("")
@@ -43,6 +46,11 @@ function Home() {
     if (window.confirm(`Are you sure on deleting user ${id}`)) {
       dispatch(deleteUserStart(id))
       toast.success(`User ${id} Deleted Successfully`)
+      //Added NEW to navigate to Home page
+      setTimeout(
+        () => dispatch(loadUsersStart({ start: 0, end: 4, currentPage: 0 })),
+        200
+      )
     }
   }
 
@@ -59,9 +67,102 @@ function Home() {
   }
 
   useEffect(() => {
-    dispatch(loadUsersStart())
+    //Added start, end, currentPage for pagination
+    dispatch(loadUsersStart({ start: 0, end: 4, currentPage: 0 }))
   }, []
   )
+
+  //Added for Pagination
+  const renderPagination = () => {
+    //page-1 for 10 users, 4 rendered at a time as pageLimit = 4 
+    //currentPage = 0, default value starts at 0
+    if (currentPage === 0) {
+      return (
+        <MDBPagination className="mb-0">
+          <MDBPaginationItem>
+            <MDBPaginationLink>1</MDBPaginationLink>
+          </MDBPaginationItem>
+          <MDBPaginationItem>
+            <MDBBtn
+              onClick={() => dispatch(
+                loadUsersStart({
+                  start: 4,
+                  end: 8,
+                  currentPage: 1
+                })
+              )}
+            >
+              Next
+            </MDBBtn>
+          </MDBPaginationItem>
+        </MDBPagination>
+      )
+    }
+    //page-2 for 10 users, 4 rendered at a time as pageLimit = 4
+    //currentPage = 1
+    else if (currentPage <= pageLimit && users.length === pageLimit) {
+      return (
+        <MDBPagination className="mb-0">
+          <MDBPaginationItem>
+            <MDBBtn
+              onClick={() => dispatch(
+                loadUsersStart({
+                  start: (currentPage - 1) * 4, //0
+                  end: currentPage * 4, //4
+                  currentPage: -1
+                })
+              )}
+            >
+              Prev
+            </MDBBtn>
+          </MDBPaginationItem>
+          <MDBPaginationItem>
+            <MDBPaginationLink>{currentPage + 1}</MDBPaginationLink>
+          </MDBPaginationItem>
+          <MDBPaginationItem>
+            <MDBBtn
+              onClick={() => dispatch(
+                loadUsersStart({
+                  start: (currentPage + 1) * 4, //8
+                  end: (currentPage + 2) * 4, //12
+                  currentPage: 1
+                })
+              )}
+            >
+              Next
+            </MDBBtn>
+          </MDBPaginationItem>
+        </MDBPagination>
+      )
+    }
+    //Last page
+    //page-3 for 10 users, 4 rendered at a time as pageLimit = 4
+    //currentPage = 2
+    else {
+      return (
+        <MDBPagination className="mb-0">
+          <MDBPaginationItem>
+            <MDBBtn
+              onClick={() => dispatch(
+                loadUsersStart({
+                  start: (currentPage - 1) * 4, //4
+                  end: currentPage * 4, //8
+                  currentPage: -1
+                })
+              )}
+            >
+              Prev
+            </MDBBtn>
+          </MDBPaginationItem>
+          <MDBPaginationItem>
+            <MDBPaginationLink>{currentPage + 1}</MDBPaginationLink>
+          </MDBPaginationItem>
+        </MDBPagination>
+      )
+    }
+  }
+
+
 
   return (
     <MDBContainer>
@@ -150,6 +251,21 @@ function Home() {
           ))}
 
         </MDBTable>
+
+        {/* //Pagination */}
+        {/* //Pagination displays only for Home Page*/}
+        {paginationMode &&
+          <div
+            style={{
+              margin: "auto",
+              padding: "15px",
+              maxWidth: "200px",
+              alignContent: "center"
+            }}
+          >
+            {renderPagination()}
+          </div>
+        }
       </div>
 
       <MDBRow center>

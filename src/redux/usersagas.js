@@ -43,17 +43,24 @@ import {
 //######################################################################################
 
 //Worker Saga - LOADING
-function* onLoadUsersStartAsync() {
+//payload contains paginationInfo which has start, end, currentPage
+//2nd level of destructuring for payload
+function* onLoadUsersStartAsync({ payload: { start, end, currentPage } }) {
     try {
         //Call - Blocking
         //call: run a method, Promise or other Saga
         //call: Wait for the promise to finish
         //call: The argument should be a function that returns a promise
-        const response = yield call(loadUsersAPI)
+        const response = yield call(loadUsersAPI, start, end)
         if (response.status === 200) {
             yield delay(500)
             console.log(response.data)
-            yield put(loadUsersSuccess(response.data))
+            //yield put(loadUsersSuccess(response.data))
+            //Update made for Pagination
+            //Need to send response.data and currentPage
+            //Above 2 details must come as a single Object because
+            //2 different arguments cannot passed in an Action Creator
+            yield put(loadUsersSuccess({ users: response.data, currentPage }))
         }
     }
     catch (error) {

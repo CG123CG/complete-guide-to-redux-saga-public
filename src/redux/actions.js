@@ -6,9 +6,11 @@ import * as types from './actionTypes'
 //             LOAD USERS
 //###################################################################################
 
-export const loadUsersStart = () => (
+//paginationInfo will contain - start, end, currentPage
+export const loadUsersStart = (paginationInfo) => (
     {
-        type: types.LOAD_USERS_START
+        type: types.LOAD_USERS_START,
+        payload: paginationInfo
     }
 )
 
