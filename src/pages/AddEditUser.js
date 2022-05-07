@@ -9,7 +9,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 
 //Import Action Creator
-import { createUserStart, updateUserStart } from '../redux/actions'
+import { createUserStart, updateUserStart, loadUsersStart } from '../redux/actions'
 
 //For toast
 import { toast } from 'react-toastify'
@@ -30,6 +30,9 @@ function AddEditUser() {
   //Edit mode selection, false === Add, true === Edit
   const [editMode, setEditMode] = useState(false)
 
+  //Error message for Status Dropdown
+  const [statusDropdownErrorMsg, setStatusDropdownErrorMsg] = useState(null)
+
   //for Go-Back button
   const navigate = useNavigate()
 
@@ -38,7 +41,7 @@ function AddEditUser() {
   //Get data/users from the Store
   //In rootReducer, usersReducer has data key, data: usersReducer
   //In usersReducer, STATE is users: []
-  const { users } = useSelector(store => store.data)
+  const { users, currentPage } = useSelector(store => store.data)
 
   //Using Object destructuring get id from the link
   //http://localhost:3002/editUser/1
@@ -99,8 +102,13 @@ function AddEditUser() {
     //Prevent Browser's default behavior for refresh upon submit
     event.preventDefault()
 
+    //Added check/error-msg for status Dropdown not selected
+    if (!status) {
+      setStatusDropdownErrorMsg("Please select a Status")
+    }
+
     //Check if all the form fields have value
-    if (name && email && phone && country) {
+    if (name && email && phone && country && status) {
       //If Add mode
       if (!editMode) {
         dispatch(createUserStart(formValue))
@@ -134,10 +142,19 @@ function AddEditUser() {
   //For Dropdown
   const onDropdownChange = (event) => {
     //console.log(event.target.value)
+    //Reset statusDropdownErrorMsg back to null
+    setStatusDropdownErrorMsg(null)
     setFormValue({
       ...formValue,
       status: event.target.value
     })
+  }
+
+  const handleGoBack = () => {
+    //This is to reset currentPage for pagination to 0
+    dispatch(loadUsersStart({ start: 0, end: 4, currentPage: -(currentPage) }))
+    //Takes to home page but also dispatches loadUsersStart in useEffect
+    setTimeout(() => navigate("/"), 500)
   }
 
   return (
@@ -231,6 +248,15 @@ function AddEditUser() {
           )}
         </select>
 
+        {/* //Error messge when no status is selected */}
+        {statusDropdownErrorMsg &&
+          <div
+            style={{ color: "red", fontSize: "15px" }}
+          >
+            {statusDropdownErrorMsg}
+          </div>
+        }
+
         <br />
         <br />
         <br />
@@ -244,7 +270,11 @@ function AddEditUser() {
           </MDBBtn>
           <MDBBtn
             color="danger"
-            onClick={() => navigate("/")}
+            type="button"
+            //Removed Navigate, not working for Pagination
+            //onClick={() => navigate("/")}
+            //OWN FIX
+            onClick={handleGoBack}
           >
             Go Back
           </MDBBtn>

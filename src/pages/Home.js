@@ -100,7 +100,9 @@ function Home() {
     }
     //page-2 for 10 users, 4 rendered at a time as pageLimit = 4
     //currentPage = 1
-    else if (currentPage <= pageLimit && users.length === pageLimit) {
+    //else if (currentPage < pageLimit - 1 && users.length === pageLimit)
+    //OWN
+    else if (users.length === pageLimit) {
       return (
         <MDBPagination className="mb-0">
           <MDBPaginationItem>
@@ -181,75 +183,87 @@ function Home() {
             </tr>
           </MDBTableHead>
 
-          {/* //NEW CONCEPT to use && */}
-          {users && users.map((user, index) => (
-            <MDBTableBody key={index}>
-              <tr>
-                <th scope="row">{index + 1}</th>
-                <td>{user.name}</td>
-                <td>{user.email}</td>
-                <td>{user.phone}</td>
-                <td>{user.country}</td>
-                <td>{user.status}</td>
-                <td>
-                  <MDBBtn
-                    className="m-1"
-                    tag="a"
-                    color="none"
-                    //id here refers to the users/id in db.json
-                    onClick={() => {
-                      //console.log(user.id)
-                      handleDelete(user.id)
-                    }}
-                  >
-                    <MDBTooltip title="Delete" tag="a">
-                      <MDBIcon
-                        fas
-                        icon="trash"
-                        style={{ color: "#dd4b39" }}
-                        size="lg"
+          {/* //Check for Search if no matching user found */}
+          {users.length === 0 ?
+            (
+              <MDBTableBody className="align-center mb-0">
+                <tr>
+                  <td colSpan={8} className="text-center mb-0">No records found</td>
+                </tr>
+              </MDBTableBody>
+            )
+            :
+            (
+              //NEW CONCEPT to use &&
+              users && users.map((user, index) => (
+                <MDBTableBody key={index}>
+                  <tr>
+                    <th scope="row">{index + 1}</th>
+                    <td>{user.name}</td>
+                    <td>{user.email}</td>
+                    <td>{user.phone}</td>
+                    <td>{user.country}</td>
+                    <td>{user.status}</td>
+                    <td>
+                      <MDBBtn
+                        className="m-1"
+                        tag="a"
+                        color="none"
+                        //id here refers to the users/id in db.json
+                        onClick={() => {
+                          //console.log(user.id)
+                          handleDelete(user.id)
+                        }}
                       >
-                      </MDBIcon>
-                    </MDBTooltip>
-                  </MDBBtn>
+                        <MDBTooltip title="Delete" tag="a">
+                          <MDBIcon
+                            fas
+                            icon="trash"
+                            style={{ color: "#dd4b39" }}
+                            size="lg"
+                          >
+                          </MDBIcon>
+                        </MDBTooltip>
+                      </MDBBtn>
 
-                  {/* //Add Spacing between Icons */}
-                  {" "}
+                      {/* //Add Spacing between Icons */}
+                      {" "}
 
-                  {/* //id here refers to the users/id in db.json */}
-                  <NavLink to={`/editUser/${user.id}`}>
-                    <MDBTooltip title="Edit" tag="a">
-                      <MDBIcon
-                        fas
-                        icon="pen"
-                        style={{ color: "#55acee", marginBottom: "10px" }}
-                        size="lg"
-                      >
-                      </MDBIcon>
-                    </MDBTooltip>
-                  </NavLink>
+                      {/* //id here refers to the users/id in db.json */}
+                      <NavLink to={`/editUser/${user.id}`}>
+                        <MDBTooltip title="Edit" tag="a">
+                          <MDBIcon
+                            fas
+                            icon="pen"
+                            style={{ color: "#55acee", marginBottom: "10px" }}
+                            size="lg"
+                          >
+                          </MDBIcon>
+                        </MDBTooltip>
+                      </NavLink>
 
-                  {/* //Add Spacing between Icons */}
-                  {" "}
+                      {/* //Add Spacing between Icons */}
+                      {" "}
 
-                  {/* //id here refers to the users/id in db.json */}
-                  <NavLink to={`/userInfo/${user.id}`}>
-                    <MDBTooltip title="View" tag="a">
-                      <MDBIcon
-                        fas
-                        icon="eye"
-                        style={{ color: "#3b5998", marginBottom: "10px" }}
-                        size="lg"
-                      >
-                      </MDBIcon>
-                    </MDBTooltip>
-                  </NavLink>
+                      {/* //id here refers to the users/id in db.json */}
+                      <NavLink to={`/userInfo/${user.id}`}>
+                        <MDBTooltip title="View" tag="a">
+                          <MDBIcon
+                            fas
+                            icon="eye"
+                            style={{ color: "#3b5998", marginBottom: "10px" }}
+                            size="lg"
+                          >
+                          </MDBIcon>
+                        </MDBTooltip>
+                      </NavLink>
 
-                </td>
-              </tr>
-            </MDBTableBody>
-          ))}
-
+                    </td>
+                  </tr>
+                </MDBTableBody>
+              ))
+            )
+          }
         </MDBTable>
 
         {/* //Pagination */}
@@ -268,57 +282,63 @@ function Home() {
         }
       </div>
 
-      <MDBRow center>
-        <MDBCol size="1">
-        </MDBCol>
+      {/* //Do not show Sort & Filter if no records are found */}
+      {users.length > 0 && (
 
-        <MDBCol size="5">
-          <h5 className="text-center">Sort By </h5>
+        <MDBRow center>
+          <MDBCol size="1">
+          </MDBCol>
 
-          {/* Sort Option */}
-          <select
-            value={sortValue}
-            style={{
-              marginLeft: "130px",
-              width: "50%",
-              borderRadius: "4px",
-              height: "35px",
-              borderColor: "lightgray"
-            }}
-            onChange={onSortChange}
-          >
-            <option value="" hidden>Please select a Sort option</option>
-            {sortOptions.map((option, index) => (
-              <option key={index}>
-                {option}
-              </option>
-            )
-            )}
-          </select>
-        </MDBCol>
+          <MDBCol size="5">
+            <h5 className="text-center">Sort By </h5>
 
-        <MDBCol size="2">
-        </MDBCol>
-
-        <MDBCol end size="4">
-          <h5 style={{ marginLeft: "30px" }}>Filter By Status</h5>
-          <MDBBtnGroup>
-            <MDBBtn
-              color="success"
-              style={{ marginRight: "8px" }}
-              onClick={() => onFilterChange("Active")}
+            {/* Sort Option */}
+            <select
+              value={sortValue}
+              style={{
+                marginLeft: "130px",
+                width: "50%",
+                borderRadius: "4px",
+                height: "35px",
+                borderColor: "lightgray"
+              }}
+              onChange={onSortChange}
             >
-              Active
-            </MDBBtn>
-            <MDBBtn
-              color="danger"
-              onClick={() => onFilterChange("In-Active")}
-            >
-              In-Active
-            </MDBBtn>
-          </MDBBtnGroup>
-        </MDBCol>
-      </MDBRow>
+              <option value="" hidden>Please select a Sort option</option>
+              {sortOptions.map((option, index) => (
+                <option key={index}>
+                  {option}
+                </option>
+              )
+              )}
+            </select>
+          </MDBCol>
+
+          <MDBCol size="2">
+          </MDBCol>
+
+          <MDBCol end size="4">
+            <h5 style={{ marginLeft: "30px" }}>Filter By Status</h5>
+            <MDBBtnGroup>
+              <MDBBtn
+                color="success"
+                style={{ marginRight: "8px" }}
+                onClick={() => onFilterChange("Active")}
+              >
+                Active
+              </MDBBtn>
+              <MDBBtn
+                color="danger"
+                onClick={() => onFilterChange("In-Active")}
+              >
+                In-Active
+              </MDBBtn>
+            </MDBBtnGroup>
+          </MDBCol>
+        </MDBRow>
+
+      )}
+
     </MDBContainer>
   )
 }

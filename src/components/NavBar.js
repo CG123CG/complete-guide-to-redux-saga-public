@@ -38,7 +38,7 @@ function NavBar() {
     const handleSubmit = (event) => {
         //Prevent Browser's default behavior for refresh upon submit
         event.preventDefault()
-        //Dispatch Action for the serach term
+        //Dispatch Action for the search term
         dispatch(searchUserStart(searchTerm))
         setSearchTerm("")
     }
